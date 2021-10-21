@@ -66,6 +66,12 @@ public class EmployeeService {
 		return empRepos.save(entity);
 	}
 	
+	//delete 
+	public EmployeeEntity deleteOneById(int id ) {
+		EmployeeEntity entity = getEmpById(id);
+		empRepos.deleteById(id);
+		return entity;
+	}
 	// find null attributes in the received object
 			private String[] getNullFields(EmployeeEntity newEntity) {
 				ArrayList<String> strs = new ArrayList<String>();
