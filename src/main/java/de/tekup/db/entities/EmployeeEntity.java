@@ -23,12 +23,8 @@ import lombok.Data;
 @Table(name = "employee")
 @Data
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id" )
-public class EmployeeEntity {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
-	@Column(length = 50)
-	private String name;
+public class EmployeeEntity extends Person{
+	
 	@Column(length = 70, nullable = false, unique = true)
 	private String email;
 	

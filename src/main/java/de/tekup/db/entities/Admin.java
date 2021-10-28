@@ -13,12 +13,8 @@ import lombok.Data;
 
 @Entity
 @Data
-public class Admin {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
-	
-	private String name;
+public class Admin extends Person{
+
 	
 	@OneToMany(mappedBy = "creator")
 	private List<Matricule> matricules = new ArrayList<>();
