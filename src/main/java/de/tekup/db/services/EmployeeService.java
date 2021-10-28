@@ -11,7 +11,9 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import de.tekup.db.entities.EmployeeEntity;
+import de.tekup.db.entities.Matricule;
 import de.tekup.db.repositories.EmployeeRepository;
+import de.tekup.db.repositories.MatriculeRepository;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -19,38 +21,39 @@ import lombok.AllArgsConstructor;
 public class EmployeeService {
 
 	private EmployeeRepository empRepos;
-	
+	private MatriculeRepository matRepos;
+
 	public EmployeeEntity saveToDB(EmployeeEntity employeeEntity) {
+		//Matricule matricule = employeeEntity.getMatricule();
+		//matRepos.save(matricule); 
 		return empRepos.save(employeeEntity);
 	}
-	
-	public List<EmployeeEntity> getAllEmployee(){
+
+	public List<EmployeeEntity> getAllEmployee() {
 		return empRepos.findAll();
 	}
-	
+
 	public EmployeeEntity getEmpById(int id) {
 		Optional<EmployeeEntity> opt = empRepos.findById(id);
 //		if(opt.isPresent())
 //			return opt.get();
 //		throw new NoSuchElementException("Employee with id is not found");
-		return opt
-	.orElseThrow(()-> new NoSuchElementException("Employee with id is not found"));
+		return opt.orElseThrow(() -> new NoSuchElementException("Employee with id is not found"));
 	}
-	
+
 	public EmployeeEntity getEmpByName(String name) {
 		Optional<EmployeeEntity> opt = empRepos.findByNameIgnoreCase(name);
 //		if(opt.isPresent())
 //			return opt.get();
 //		throw new NoSuchElementException("Employee with id is not found");
-		return opt
-	.orElseThrow(()-> new NoSuchElementException("Employee with id is not found"));
+		return opt.orElseThrow(() -> new NoSuchElementException("Employee with id is not found"));
 	}
-	
-	public List<EmployeeEntity> getAllEmpBornAfter(LocalDate date){
+
+	public List<EmployeeEntity> getAllEmpBornAfter(LocalDate date) {
 		return empRepos.getAllBornAfter(date);
 	}
-	
-	// update 
+
+	// update
 	public EmployeeEntity updateEmpById(int id, EmployeeEntity newEntity) {
 		EmployeeEntity entity = getEmpById(id);
 //		if(newEntity.getName()!=null)
@@ -59,36 +62,37 @@ public class EmployeeService {
 //			entity.setDob(newEntity.getDob());
 //		if(newEntity.getEmail()!=null)
 //			entity.setEmail(newEntity.getEmail());
-		
-		newEntity.setId(entity.getId());					
+
+		newEntity.setId(entity.getId());
 		BeanUtils.copyProperties(newEntity, entity, getNullFields(newEntity));
-		
+
 		return empRepos.save(entity);
 	}
-	
-	//delete 
-	public EmployeeEntity deleteOneById(int id ) {
+
+	// delete
+	public EmployeeEntity deleteOneById(int id) {
 		EmployeeEntity entity = getEmpById(id);
 		empRepos.deleteById(id);
 		return entity;
 	}
+
 	// find null attributes in the received object
-			private String[] getNullFields(EmployeeEntity newEntity) {
-				ArrayList<String> strs = new ArrayList<String>();
-				for (Field field : newEntity.getClass().getDeclaredFields()) {
-			        field.setAccessible(true); // to allow the access of member attributes
-			        Object attribute = null;
-					try {
-						attribute = field.get(newEntity);
-					} catch (IllegalArgumentException | IllegalAccessException e) {
-						System.err.println(e.getMessage());
-					} 
-			        if (attribute == null) {
-			            strs.add(field.getName());
-			        }
-			    }
-				
-				return strs.toArray(new String[0]);
+	private String[] getNullFields(EmployeeEntity newEntity) {
+		ArrayList<String> strs = new ArrayList<String>();
+		for (Field field : newEntity.getClass().getDeclaredFields()) {
+			field.setAccessible(true); // to allow the access of member attributes
+			Object attribute = null;
+			try {
+				attribute = field.get(newEntity);
+			} catch (IllegalArgumentException | IllegalAccessException e) {
+				System.err.println(e.getMessage());
 			}
+			if (attribute == null) {
+				strs.add(field.getName());
+			}
+		}
+
+		return strs.toArray(new String[0]);
+	}
 
 }
